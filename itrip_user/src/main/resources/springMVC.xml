@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			    http://www.springframework.org/schema/beans/spring-beans.xsd
+			    http://www.springframework.org/schema/context
+			    http://www.springframework.org/schema/context/spring-context.xsd
+			    http://www.springframework.org/schema/aop
+			    http://www.springframework.org/schema/aop/spring-aop.xsd
+			    http://www.springframework.org/schema/tx
+			    http://www.springframework.org/schema/tx/spring-tx.xsd
+			    http://www.springframework.org/schema/mvc
+			    http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!--扫描controller组件-->
+    <context:component-scan base-package="com.itrip.controller"></context:component-scan>
+    <!--处理映射器，和适配器-->
+    <mvc:annotation-driven/>
+    <!--配置视图解析器-->
+    <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"></property>
+        <property name="suffix" value=".html"></property>
+    </bean>
+    <!--释放静态资源-->
+    <mvc:default-servlet-handler/>
+
+    <!--文件上传-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 请求编码格式 -->
+        <property name="defaultEncoding" value="utf-8"></property>
+        <!-- 上传文件大小(单位:字节) -->
+        <property name="maxUploadSize" value="50000000"></property>
+        <!-- 缓冲区大小(单位:KB) -->
+        <property name="maxInMemorySize" value="1024"></property>
+    </bean>
+
+
+    <!-- 1.在文件上传解析时发现异常，此时还没有进入到Controller方法中 -->
+    <bean id="exceptionResolver" class= "org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <!-- 遇到MaxUploadSizeExceededException异常时，跳转到error.jsp页面  -->
+                <prop key= "org.springframework.web.multipart.MaxUploadSizeExceededException">/production/error.jsp </prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--配置拦截器-->
+    <!--<mvc:interceptors>
+        &lt;!&ndash;
+                <bean class="cn.china.interceptor.LoginInterceptor"></bean>
+        &ndash;&gt;
+        &lt;!&ndash;判断文件上传时的大小&ndash;&gt;
+        <mvc:interceptor>
+            <mvc:mapping path="/**/"/>
+            <bean class="cn.china.interceptor.FileSizeInterceptor">
+                <property name="maxSize" value="50000000"></property>
+            </bean>
+        </mvc:interceptor>
+        &lt;!&ndash;对特定请求进行拦截&ndash;&gt;
+        <mvc:interceptor>
+            <mvc:mapping path="/addVersion"/>
+            <bean class="cn.china.interceptor.FileUploadInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+</beans>

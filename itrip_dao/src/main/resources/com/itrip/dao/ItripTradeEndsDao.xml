@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itrip.dao.ItripTradeEndsDao">
+
+    <resultMap type="com.itrip.entity.ItripTradeEnds" id="ItripTradeEndsMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="orderno" column="orderNo" jdbcType="VARCHAR"/>
+        <result property="flag" column="flag" jdbcType="OTHER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ItripTradeEndsMap">
+        select
+          id, orderNo, flag
+        from itripdb.itrip_trade_ends
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ItripTradeEndsMap">
+        select
+          id, orderNo, flag
+        from itripdb.itrip_trade_ends
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ItripTradeEndsMap">
+        select
+          id, orderNo, flag
+        from itripdb.itrip_trade_ends
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="orderno != null and orderno != ''">
+                and orderNo = #{orderno}
+            </if>
+            <if test="flag != null">
+                and flag = #{flag}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into itripdb.itrip_trade_ends(orderNo, flag)
+        values (#{orderno}, #{flag})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update itripdb.itrip_trade_ends
+        <set>
+            <if test="orderno != null and orderno != ''">
+                orderNo = #{orderno},
+            </if>
+            <if test="flag != null">
+                flag = #{flag},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from itripdb.itrip_trade_ends where id = #{id}
+    </delete>
+
+</mapper>

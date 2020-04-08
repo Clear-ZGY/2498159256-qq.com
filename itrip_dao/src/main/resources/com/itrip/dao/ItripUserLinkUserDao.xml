@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itrip.dao.ItripUserLinkUserDao">
+
+    <resultMap type="com.itrip.entity.ItripUserLinkUser" id="ItripUserLinkUserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="linkusername" column="linkUserName" jdbcType="VARCHAR"/>
+        <result property="linkidcard" column="linkIdCard" jdbcType="VARCHAR"/>
+        <result property="linkphone" column="linkPhone" jdbcType="VARCHAR"/>
+        <result property="userid" column="userId" jdbcType="INTEGER"/>
+        <result property="creationdate" column="creationDate" jdbcType="TIMESTAMP"/>
+        <result property="createdby" column="createdBy" jdbcType="INTEGER"/>
+        <result property="modifydate" column="modifyDate" jdbcType="TIMESTAMP"/>
+        <result property="modifiedby" column="modifiedBy" jdbcType="INTEGER"/>
+        <result property="linkidcardtype" column="linkIdCardType" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ItripUserLinkUserMap">
+        select
+          id, linkUserName, linkIdCard, linkPhone, userId, creationDate, createdBy, modifyDate, modifiedBy, linkIdCardType
+        from itripdb.itrip_user_link_user
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ItripUserLinkUserMap">
+        select
+          id, linkUserName, linkIdCard, linkPhone, userId, creationDate, createdBy, modifyDate, modifiedBy, linkIdCardType
+        from itripdb.itrip_user_link_user
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="ItripUserLinkUserMap">
+        select
+          id, linkUserName, linkIdCard, linkPhone, userId, creationDate, createdBy, modifyDate, modifiedBy, linkIdCardType
+        from itripdb.itrip_user_link_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="linkusername != null and linkusername != ''">
+                and linkUserName = #{linkusername}
+            </if>
+            <if test="linkidcard != null and linkidcard != ''">
+                and linkIdCard = #{linkidcard}
+            </if>
+            <if test="linkphone != null and linkphone != ''">
+                and linkPhone = #{linkphone}
+            </if>
+            <if test="userid != null">
+                and userId = #{userid}
+            </if>
+            <if test="creationdate != null">
+                and creationDate = #{creationdate}
+            </if>
+            <if test="createdby != null">
+                and createdBy = #{createdby}
+            </if>
+            <if test="modifydate != null">
+                and modifyDate = #{modifydate}
+            </if>
+            <if test="modifiedby != null">
+                and modifiedBy = #{modifiedby}
+            </if>
+            <if test="linkidcardtype != null">
+                and linkIdCardType = #{linkidcardtype}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into itripdb.itrip_user_link_user(linkUserName, linkIdCard, linkPhone, userId, creationDate, createdBy, modifyDate, modifiedBy, linkIdCardType)
+        values (#{linkusername}, #{linkidcard}, #{linkphone}, #{userid}, #{creationdate}, #{createdby}, #{modifydate}, #{modifiedby}, #{linkidcardtype})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update itripdb.itrip_user_link_user
+        <set>
+            <if test="linkusername != null and linkusername != ''">
+                linkUserName = #{linkusername},
+            </if>
+            <if test="linkidcard != null and linkidcard != ''">
+                linkIdCard = #{linkidcard},
+            </if>
+            <if test="linkphone != null and linkphone != ''">
+                linkPhone = #{linkphone},
+            </if>
+            <if test="userid != null">
+                userId = #{userid},
+            </if>
+            <if test="creationdate != null">
+                creationDate = #{creationdate},
+            </if>
+            <if test="createdby != null">
+                createdBy = #{createdby},
+            </if>
+            <if test="modifydate != null">
+                modifyDate = #{modifydate},
+            </if>
+            <if test="modifiedby != null">
+                modifiedBy = #{modifiedby},
+            </if>
+            <if test="linkidcardtype != null">
+                linkIdCardType = #{linkidcardtype},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from itripdb.itrip_user_link_user where id = #{id}
+    </delete>
+
+</mapper>
