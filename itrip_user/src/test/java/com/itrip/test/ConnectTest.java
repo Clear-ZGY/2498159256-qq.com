@@ -3,6 +3,7 @@ package com.itrip.test;
 import org.springframework.util.DigestUtils;
 import redis.clients.jedis.Jedis;
 
+import java.lang.reflect.Field;
 import java.util.zip.CRC32;
 
 public class ConnectTest {
@@ -14,17 +15,23 @@ public class ConnectTest {
         System.out.println("服务正在运行："+jedis.ping());
         System.out.println("数据插入成功");
         jedis.close();*/
-        Integer a = new Integer(1);
-        Integer b = new Integer(2);
+        Integer a = 1;
+        Integer b = 2;
         System.out.println("a="+a+",b="+b);
         ConnectTest.range(a,b);
         System.out.println("a="+a+",b="+b);
     }
 
     public static void range(Integer i1, Integer i2) {
-        Integer temp = null;
-        temp = i1;
-        i1 = i2;
-        i1 = temp;
+
+        try {
+            Field f = Integer.class.getDeclaredField("value");
+            f.setAccessible(true);
+            Integer temp= new Integer(i1.intValue());
+            f.set(i1,i2.intValue());
+            f.set(i2,temp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

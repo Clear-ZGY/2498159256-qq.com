@@ -71,7 +71,8 @@ public class VendorsController {
 
     /**
      * 第三方登录：获取token并保存
-     * @param code 第三方返回code
+     *
+     * @param code    第三方返回code
      * @param request
      * @return
      */
