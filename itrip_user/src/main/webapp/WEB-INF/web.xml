@@ -80,4 +80,15 @@
         <url-pattern>*.img</url-pattern>
     </servlet-mapping>
     <!--放开拦截资源结束-->
+    <!--支持PUT和DELETE请求开始-->
+    <!--在此过滤器中Spring重写了request.getParameter()使PUT请求的参数可以正确获取-->
+    <filter>
+        <filter-name>httpPutFormContentFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>httpPutFormContentFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--支持PUT和DELETE请求结束-->
 </web-app>

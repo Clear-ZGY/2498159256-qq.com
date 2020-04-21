@@ -37,8 +37,8 @@ public class MD5 {
 	}
 
 	public static int getRandomCode(){		
-		int max=9999;
-        int min=1111;
+		int max=999999;
+        int min=111111;
         Random random = new Random();
         return random.nextInt(max)%(max-min+1) + min;		
 	}

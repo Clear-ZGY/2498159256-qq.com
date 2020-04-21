@@ -4,6 +4,7 @@ import org.springframework.util.DigestUtils;
 import redis.clients.jedis.Jedis;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 import java.util.zip.CRC32;
 
 public class ConnectTest {
@@ -15,11 +16,16 @@ public class ConnectTest {
         System.out.println("服务正在运行："+jedis.ping());
         System.out.println("数据插入成功");
         jedis.close();*/
-        Integer a = 1;
+        /*Integer a = 1;
         Integer b = 2;
         System.out.println("a="+a+",b="+b);
         ConnectTest.range(a,b);
-        System.out.println("a="+a+",b="+b);
+        System.out.println("a="+a+",b="+b);*/
+
+
+        for (int i = 0; i <100 ; i++) {
+            System.out.println(String.format("%06d", new Random().nextInt(999999)));
+        }
     }
 
     public static void range(Integer i1, Integer i2) {

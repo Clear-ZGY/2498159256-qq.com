@@ -6,10 +6,12 @@ import com.itrip.entity.ItripUser;
 import com.itrip.exception.TokenValidationFailedException;
 import com.itrip.service.ItripUserService;
 import com.itrip.service.RedisAPIService;
+import com.itrip.service.SMSVerificationService;
 import com.itrip.service.TokenService;
 import com.itrip.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.propertyeditors.URLEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * 用户表(ItripUser)表控制层
@@ -39,6 +43,10 @@ public class ItripUserController {
     private RedisAPIService redisAPIService;
     @Resource
     private TokenService tokenService;
+    @Resource
+    private SMSVerificationService smsVerificationService;
+    @Resource
+    private SMSVerificationUtil smsVerificationUtil;
 
     /**
      * 用户登录
@@ -122,31 +130,81 @@ public class ItripUserController {
         }
     }
 
-    /**
-     * 用户第三方登录回调
-     * https://api.weibo.com/oauth2/authorize?client_id=2482047288&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Fitrip%2Fapi%2Fback
-     *//*
-    @RequestMapping(value = "back", method = RequestMethod.GET)
-    @ApiOperation(value = "用户第三方登录回调（/api/back）", notes = "用户第三方登录回调 ", httpMethod = "GET")
+    @RequestMapping(value = "registerbyphone", method = RequestMethod.POST)
+    @ApiOperation(value = "手机注册（/api/registerbyphone）", notes = "手机注册 ", httpMethod = "POST")
     @ResponseBody
-    public Dto back(String code) {
-        String backUrl = "http://127.0.0.1:8080/itrip/api/back";
-        String encode = "";
-        try {
-            encode = URLEncoder.encode(backUrl, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return DtoUtil.returnFail(e.getMessage(), ErrorCode.URL_PARSE_ERR);
+    public Dto registerbyphone(@RequestBody ItripUser userVO) {
+        System.err.println(userVO.getUsercode());
+        if (userVO != null && !Objects.equals(userVO, "")) {
+            boolean result = ThirdPartyLoginUtil.validateMobileNumber(userVO.getUsercode());
+            if (result == true) {
+                ItripUser user = itripUserService.queryByUserCode(userVO.getUsercode());
+                if (user == null) {
+                    ItripUser itripUser = new ItripUser();
+                    itripUser.setUsercode(userVO.getUsercode());
+                    itripUser.setUserpassword(userVO.getUserpassword());
+                    itripUser.setUsertype(0);
+                    itripUser.setCreationdate(new Date());
+                    itripUser.setUsername(userVO.getUsername());
+                    ItripUser insert = itripUserService.insert(itripUser);
+                    int randomCode = MD5.getRandomCode();
+                    String msgCode = String.valueOf(randomCode);
+                    if (insert != null && !Objects.equals(insert, "")) {
+                        Boolean resultSMS = smsVerificationService.sendSMSVerification(userVO.getUsercode(), msgCode);//发送信息验证码
+                        if (resultSMS) {
+                            boolean set = redisAPIService.set("code:" + userVO.getUsercode(), ClientCode.SMS_VALIDATION_EXPIRATION_TIME, String.valueOf(randomCode));
+                            if (set == true) {
+                                return DtoUtil.returnSuccess();
+                            } else {
+                                return DtoUtil.returnFail("创建Token失败", ErrorCode.AUTH_CREATE_FAILED);
+                            }
+                        } else {
+                            return DtoUtil.returnFail("短信验证码发送失败", ErrorCode.SMS_VERIFICATION_CODE_SENDING_FAILED);
+                        }
+                    } else {
+                        return DtoUtil.returnFail("创建账户失败", ErrorCode.AUTH_USER_CREATE_FAILED);
+                    }
+
+                } else {
+                    return DtoUtil.returnFail("用户已存在", ErrorCode.AUTH_USER_ALREADY_EXISTS);
+                }
+
+            } else {
+                return DtoUtil.returnFail("手机号码格式不正确或为空", ErrorCode.THE_PHONE_NUMBER_FORMAT_IS_INCORRECT_OR_EMPTY);
+            }
+
+        } else {
+            return DtoUtil.returnFail("用户为空，非法用户账号！", ErrorCode.USER_ILLEGAL_CODE_ERR);
         }
-        System.out.println("回调成功：：：" + code);
-        String url = "https://api.weibo.com/oauth2/access_token" +
-                "?client_id=2482047288" +
-                "&client_secret=542045a8e99aae5a8897eadcd53f86ee" +
-                "&grant_type=authorization_code" +
-                "&redirect_uri=" + encode +
-                "&code=" + code;
-        String result = UrlUtils.loadURL(url);
-        System.out.println("返回结果：：：" + result);
-        return DtoUtil.returnSuccess(result);
-    }*/
+    }
+
+    @RequestMapping(value = "validatephone", method = RequestMethod.PUT, produces = "application/json")
+    @ApiOperation(value = "手机注册短信验证（/api/registerbyphone）", notes = "手机注册短信验证 ", httpMethod = "PUT")
+    @ResponseBody
+    public Dto validatephone(@ApiParam(name = "user", value = "手机号码", defaultValue = "13811565189") @RequestParam(value = "user", required = false, defaultValue = "13811565189") String user,
+                             @ApiParam(name = "code", value = "验证码", defaultValue = "8888") @RequestParam(value = "code", required = false, defaultValue = "8888") String code) {
+        System.out.println("user:::" + user);
+        System.out.println("code:::" + code);
+        return smsVerificationService.verifyReceiptCode(user,code);
+    }
+
+    /*@RequestMapping(value = "getcode", method = RequestMethod.POST, produces = "application/json")
+    @ApiOperation(value = "手机注册（/api/getcode）", notes = "手机注册 ", httpMethod = "POST")
+    @ResponseBody
+    public Dto getCode(@ApiParam(name = "mobileNumber", value = "手机号码", defaultValue = "13811565189") @RequestParam(value = "mobileNumber", required = false, defaultValue = "13811565189") String mobileNumber) {
+        System.out.println("mobileNumber:::" + mobileNumber);
+        int randomCode = MD5.getRandomCode();
+        Boolean result = smsVerificationUtil.sendCode(mobileNumber, String.valueOf(randomCode));
+        if (result) {
+            boolean set = redisAPIService.set("code:" + mobileNumber, ClientCode.SMS_VALIDATION_EXPIRATION_TIME, String.valueOf(randomCode));
+            if (set == true) {
+                return DtoUtil.returnSuccess();
+            } else {
+                return DtoUtil.returnFail("创建Token失败", ErrorCode.AUTH_CREATE_FAILED);
+            }
+        } else {
+            return DtoUtil.returnFail("短信验证码发送失败", ErrorCode.SMS_VERIFICATION_CODE_SENDING_FAILED);
+        }
+    }
+*/
 }

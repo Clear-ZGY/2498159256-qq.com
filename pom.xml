@@ -299,6 +299,12 @@
             <artifactId>uasparser</artifactId>
             <version>0.6.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.cloopen</groupId>
+            <artifactId>java-sms-sdk</artifactId>
+            <version>1.0.1</version>
+        </dependency>
     </dependencies>
 
     <!-- 添加tomcat7插件 -->
