@@ -293,7 +293,7 @@
             <version>2.9.0</version>
         </dependency>
         <!--redis结束-->
-
+        <!--配置短信验证码开始-->
         <dependency>
             <groupId>cz.mallat.uasparser</groupId>
             <artifactId>uasparser</artifactId>
@@ -305,6 +305,21 @@
             <artifactId>java-sms-sdk</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <!--配置短信验证码结束-->
+
+        <!--配置邮箱验证开始-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <!--配置邮箱验证结束-->
     </dependencies>
 
     <!-- 添加tomcat7插件 -->
@@ -318,4 +333,16 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot</name>
+            <url>http://192.168.138.147:8081/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus releases</name>
+            <url>http://192.168.138.147:8081/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 </project>

@@ -23,12 +23,33 @@ public class ThirdPartyLoginUtil {
         }
     }
 
+    /**
+     * 正则测试电话号码格式
+     * @param mobileNumber 电话号码
+     * @return
+     */
     public static boolean validateMobileNumber(String mobileNumber) {
         boolean flag = false;
         if (mobileNumber != null && !Objects.equals(mobileNumber, "")) {
             String telRegex = "^[1][3,4,5,7,8][0-9]{9}$";//以1开始，第二位为3,4,5,7,8 中任意一位，共11位
             Pattern pattern = Pattern.compile(telRegex);
             Matcher matcher = pattern.matcher(mobileNumber);
+            flag = matcher.matches();
+        }
+        return flag;
+    }
+
+    /**
+     * 正则验证邮箱账号格式
+     * @param emailaccount 邮箱账号
+     * @return
+     */
+    public static boolean validateEmailAccount(String emailaccount) {
+        boolean flag = false;
+        if (emailaccount != null && !Objects.equals(emailaccount, "")) {
+            String telRegex = "^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*\\.[a-zA-Z0-9]{2,6}$";//以1开始，第二位为3,4,5,7,8 中任意一位，共11位
+            Pattern pattern = Pattern.compile(telRegex);
+            Matcher matcher = pattern.matcher(emailaccount);
             flag = matcher.matches();
         }
         return flag;

@@ -4,15 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.itrip.dto.Dto;
 import com.itrip.entity.ItripUser;
 import com.itrip.exception.TokenValidationFailedException;
-import com.itrip.service.ItripUserService;
-import com.itrip.service.RedisAPIService;
-import com.itrip.service.SMSVerificationService;
-import com.itrip.service.TokenService;
+import com.itrip.service.*;
 import com.itrip.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.propertyeditors.URLEditor;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +45,7 @@ public class ItripUserController {
     @Resource
     private SMSVerificationService smsVerificationService;
     @Resource
-    private SMSVerificationUtil smsVerificationUtil;
+    private EmailVerificationService emailVerificationService;
 
     /**
      * 用户登录
@@ -185,26 +184,75 @@ public class ItripUserController {
                              @ApiParam(name = "code", value = "验证码", defaultValue = "8888") @RequestParam(value = "code", required = false, defaultValue = "8888") String code) {
         System.out.println("user:::" + user);
         System.out.println("code:::" + code);
-        return smsVerificationService.verifyReceiptCode(user,code);
-    }
-
-    /*@RequestMapping(value = "getcode", method = RequestMethod.POST, produces = "application/json")
-    @ApiOperation(value = "手机注册（/api/getcode）", notes = "手机注册 ", httpMethod = "POST")
-    @ResponseBody
-    public Dto getCode(@ApiParam(name = "mobileNumber", value = "手机号码", defaultValue = "13811565189") @RequestParam(value = "mobileNumber", required = false, defaultValue = "13811565189") String mobileNumber) {
-        System.out.println("mobileNumber:::" + mobileNumber);
-        int randomCode = MD5.getRandomCode();
-        Boolean result = smsVerificationUtil.sendCode(mobileNumber, String.valueOf(randomCode));
-        if (result) {
-            boolean set = redisAPIService.set("code:" + mobileNumber, ClientCode.SMS_VALIDATION_EXPIRATION_TIME, String.valueOf(randomCode));
-            if (set == true) {
-                return DtoUtil.returnSuccess();
-            } else {
-                return DtoUtil.returnFail("创建Token失败", ErrorCode.AUTH_CREATE_FAILED);
-            }
-        } else {
-            return DtoUtil.returnFail("短信验证码发送失败", ErrorCode.SMS_VERIFICATION_CODE_SENDING_FAILED);
+        if(smsVerificationService.verifyReceiptCode(user, code)){
+            return DtoUtil.returnSuccess();
+        }else{
+            return DtoUtil.returnFail("短信验证失败",ErrorCode.SMS_VERIFICATION_FAILED);
         }
     }
-*/
+
+    @RequestMapping(value = "doregister", method = RequestMethod.POST, produces = "application/json")
+    @ApiOperation(value = "使用邮箱注册（/api/doregister）", notes = "使用邮箱注册 ", httpMethod = "POST")
+    @ResponseBody
+    public Dto doregister(@ApiParam(name = "userVO", value = "用户实体") @RequestBody ItripUser userVO) {
+        System.out.println("user:::" + userVO.getUsercode());
+        if (userVO != null && !Objects.equals(userVO, "")) {
+            boolean result = ThirdPartyLoginUtil.validateEmailAccount(userVO.getUsercode());
+            if (result == true) {
+                ItripUser user = itripUserService.queryByUserCode(userVO.getUsercode());
+                if (user == null) {
+                    ItripUser itripUser = new ItripUser();
+                    itripUser.setUsercode(userVO.getUsercode());
+                    itripUser.setUserpassword(userVO.getUserpassword());
+                    itripUser.setUsertype(0);
+                    itripUser.setCreationdate(new Date());
+                    itripUser.setUsername(userVO.getUsername());
+                    ItripUser insert = itripUserService.insert(itripUser);
+                    int randomCode = MD5.getRandomCode();
+                    String emailCode = String.valueOf(randomCode);
+                    if (insert != null && !Objects.equals(insert, "")) {
+                        Boolean aBoolean = emailVerificationService.sendEmail(userVO.getUsercode(), emailCode);
+                        if(aBoolean){
+                            boolean set = redisAPIService.set("code:" + userVO.getUsercode(), ClientCode.SMS_VALIDATION_EXPIRATION_TIME, String.valueOf(randomCode));
+                            if (set == true) {
+                                return DtoUtil.returnSuccess();
+                            } else {
+                                return DtoUtil.returnFail("创建Token失败", ErrorCode.AUTH_CREATE_FAILED);
+                            }
+                        }else{
+                            return DtoUtil.returnFail("邮箱验证码发送失败",ErrorCode.EMAIL_VERIFICATION_CODE_SENDING_FAILED);
+                        }
+
+                    } else {
+                        return DtoUtil.returnFail("创建账户失败", ErrorCode.AUTH_USER_CREATE_FAILED);
+                    }
+
+                } else {
+                    return DtoUtil.returnFail("用户已存在", ErrorCode.AUTH_USER_ALREADY_EXISTS);
+                }
+
+            } else {
+                return DtoUtil.returnFail("邮箱格式不正确或为空", ErrorCode.THE_EMAIL_ACCOUNT_FORMAT_IS_INCORRECT_OR_EMPTY);
+            }
+
+        } else {
+            return DtoUtil.returnFail("用户为空，非法用户账号！", ErrorCode.USER_ILLEGAL_CODE_ERR);
+        }
+    }
+
+
+    @RequestMapping(value = "activate", method = RequestMethod.PUT, produces = "application/json")
+    @ApiOperation(value = "邮箱注册用户激活（/api/activate）", notes = "邮箱注册用户激活 ", httpMethod = "PUT")
+    @ResponseBody
+    public Dto activate(@ApiParam(name = "user", value = "注册邮箱地址", defaultValue = "test@bdqn.cn") @RequestParam(value = "user", required = false, defaultValue = "test@bdqn.cn") String user,
+                             @ApiParam(name = "code", value = "验证码", defaultValue = "018f9a8b2381839ee6f40ab2207c0cfe") @RequestParam(value = "code", required = false, defaultValue = "018f9a8b2381839ee6f40ab2207c0cfe") String code) {
+        System.out.println("user:::" + user);
+        System.out.println("code:::" + code);
+        if(emailVerificationService.verificationEmailCode(user, code)){
+            return DtoUtil.returnSuccess();
+        }else{
+            return DtoUtil.returnFail("短信验证失败",ErrorCode.SMS_VERIFICATION_FAILED);
+        }
+    }
+    //krticheulzpjdiaa
 }

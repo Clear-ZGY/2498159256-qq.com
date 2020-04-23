@@ -133,7 +133,7 @@ public class SMSVerificationServiceImpl implements SMSVerificationService {
      * @param code         回执码
      */
     @Override
-    public Dto verifyReceiptCode(String mobileNumber, String code) {
+    public Boolean verifyReceiptCode(String mobileNumber, String code) {
         String key="code:" +mobileNumber;
         if (redisAPIService.exist(key) == true) {
             String result = redisAPIService.get(key);
@@ -144,15 +144,19 @@ public class SMSVerificationServiceImpl implements SMSVerificationService {
                         itripUser.setFlatid(itripUser.getId());
                         ItripUser update = itripUserService.update(itripUser);
                         redisAPIService.set(key,5,code);
-                        return DtoUtil.returnSuccess();
+                        //return DtoUtil.returnSuccess();
+                        return true;
                     }else{
-                        return DtoUtil.returnFail("用户不存在，非法用户账号",ErrorCode.USER_ILLEGAL_CODE_ERR);
+                        //return DtoUtil.returnFail("用户不存在，非法用户账号",ErrorCode.USER_ILLEGAL_CODE_ERR);
+                        return false;
                     }
                 } else {
-                    return DtoUtil.returnFail("短信验证码不匹配", ErrorCode.SMS_VERIFICATION_CODE_MISMATCH);
+                    //return DtoUtil.returnFail("短信验证码不匹配", ErrorCode.SMS_VERIFICATION_CODE_MISMATCH);
+                    return false;
                 }
         }else {
-            return DtoUtil.returnFail("手机号码不存在或已失效", ErrorCode.MOBILE_NUMBER_DOES_NOT_EXIST_OR_IS_INVALID);
+            //return DtoUtil.returnFail("手机号码不存在或已失效", ErrorCode.MOBILE_NUMBER_DOES_NOT_EXIST_OR_IS_INVALID);
+            return false;
         }
 
     }

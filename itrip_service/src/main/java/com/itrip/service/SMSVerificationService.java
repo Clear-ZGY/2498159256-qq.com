@@ -11,5 +11,5 @@ public interface SMSVerificationService {
     /**
      * 验证 短信验证码
      */
-    Dto verifyReceiptCode(String mobileNumber,String code);
+    Boolean verifyReceiptCode(String mobileNumber,String code);
 }

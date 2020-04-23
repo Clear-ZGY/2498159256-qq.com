@@ -33,6 +33,12 @@ public class ErrorCode {
     public final static String MOBILE_NUMBER_DOES_NOT_EXIST_OR_IS_INVALID = "30013";//手机号码不存在或已失效
     public final static String THE_PHONE_NUMBER_FORMAT_IS_INCORRECT_OR_EMPTY = "30014";//手机号码格式不正确或为空
     public final static String SMS_VERIFICATION_CODE_SENDING_FAILED="30015";//短信验证码发送失败
+    public final static String SMS_VERIFICATION_FAILED="30018";//短信验证失败
+
+    public final static String THE_EMAIL_ACCOUNT_FORMAT_IS_INCORRECT_OR_EMPTY = "30016";//邮箱账号格式不正确或为空
+    public final static String EMAIL_VERIFICATION_CODE_SENDING_FAILED="30017";//邮箱验证码发送失败
+
+
 
 
 
