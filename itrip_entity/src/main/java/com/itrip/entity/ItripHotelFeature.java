@@ -2,6 +2,7 @@ package com.itrip.entity;
 
 import java.util.Date;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (ItripHotelFeature)实体类
@@ -26,6 +27,7 @@ public class ItripHotelFeature implements Serializable {
     
     private Long modifiedby;
 
+    private List<ItripLabelDic> itripLabelDicList;
         
     public Long getId() {
         return id;
@@ -83,4 +85,11 @@ public class ItripHotelFeature implements Serializable {
         this.modifiedby = modifiedby;
     }
 
+    public List<ItripLabelDic> getItripLabelDicList() {
+        return itripLabelDicList;
+    }
+
+    public void setItripLabelDicList(List<ItripLabelDic> itripLabelDicList) {
+        this.itripLabelDicList = itripLabelDicList;
+    }
 }

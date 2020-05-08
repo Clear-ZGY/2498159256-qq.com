@@ -3,9 +3,12 @@ package com.itrip.service.impl;
 import com.itrip.entity.ItripAreaDic;
 import com.itrip.dao.ItripAreaDicDao;
 import com.itrip.service.ItripAreaDicService;
+import com.itrip.vo.ItripAreaDicVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +43,46 @@ public class ItripAreaDicServiceImpl implements ItripAreaDicService {
     @Override
     public List<ItripAreaDic> queryAllByLimit(int offset, int limit) {
         return this.itripAreaDicDao.queryAllByLimit(offset, limit);
+    }
+
+    /**
+     * 根据parent查询商圈
+     *
+     * @param parent 父级区域
+     * @return 对象列表
+     */
+    @Override
+    public List<ItripAreaDic> queryByParent(int parent) {
+        Integer i = parent;
+        Long parentId=i.longValue();
+        ItripAreaDic itripAreaDic = new ItripAreaDic();
+        itripAreaDic.setParent(parentId);
+        itripAreaDic.setIsactivated(1);
+        itripAreaDic.setIstradingarea(1);
+        return this.itripAreaDicDao.queryByParent(itripAreaDic);
+    }
+
+    /**
+     * 根据type查询热门城市
+     *
+     * @param type 参数
+     * @return 对象列表
+     */
+    @Override
+    public List<ItripAreaDicVo> queryByType(Integer type) {
+        List<ItripAreaDicVo> itripAreaDicVoList = new ArrayList<>();
+        ItripAreaDicVo itripAreaDicVo = null;
+        ItripAreaDic itripAreaDic = new ItripAreaDic();
+        itripAreaDic.setIshot(1);
+        itripAreaDic.setIschina(type);
+        List<ItripAreaDic> itripAreaDics = this.itripAreaDicDao.queryAll(itripAreaDic);
+        for (ItripAreaDic areadic:itripAreaDics) {
+            itripAreaDicVo = new ItripAreaDicVo();
+            BeanUtils.copyProperties(areadic,itripAreaDicVo);
+            itripAreaDicVoList.add(itripAreaDicVo);
+        }
+
+        return itripAreaDicVoList;
     }
 
     /**

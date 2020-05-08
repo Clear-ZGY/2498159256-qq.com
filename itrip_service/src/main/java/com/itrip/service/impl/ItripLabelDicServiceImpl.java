@@ -3,9 +3,13 @@ package com.itrip.service.impl;
 import com.itrip.entity.ItripLabelDic;
 import com.itrip.dao.ItripLabelDicDao;
 import com.itrip.service.ItripLabelDicService;
+import com.itrip.vo.ItripLabelDicVO;
+import com.mchange.v2.beans.BeansUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,13 +38,35 @@ public class ItripLabelDicServiceImpl implements ItripLabelDicService {
      * 查询多条数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     @Override
     public List<ItripLabelDic> queryAllByLimit(int offset, int limit) {
         return this.itripLabelDicDao.queryAllByLimit(offset, limit);
     }
+
+    /**
+     * 根据ParentId查询多条数据
+     *
+     * @param parentId 参数
+     * @return 对象列表
+     */
+    @Override
+    public List<ItripLabelDicVO> queryByParentId(Long parentId) {
+        List<ItripLabelDicVO> itripLabelDicVOList = new ArrayList<>();
+        ItripLabelDic itripLabelDic = new ItripLabelDic();
+        itripLabelDic.setParentid(parentId);
+        List<ItripLabelDic> itripLabelDics = itripLabelDicDao.queryAll(itripLabelDic);
+        ItripLabelDicVO itripLabelDicVO = null;
+        for (ItripLabelDic label : itripLabelDics) {
+            itripLabelDicVO = new ItripLabelDicVO();
+            BeanUtils.copyProperties(label, itripLabelDicVO);
+            itripLabelDicVOList.add(itripLabelDicVO);
+        }
+        return itripLabelDicVOList;
+    }
+
 
     /**
      * 新增数据

@@ -19,6 +19,12 @@
         <result property="modifiedby" column="modifiedBy" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap type="com.itrip.entity.ItripHotelTradingArea" id="AreaDicMap">
+       <collection property="itripAreaDicList" ofType="com.itrip.entity.ItripAreaDic">
+           <id column="id" property="id"></id>
+       </collection>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="ItripAreaDicMap">
         select
@@ -35,10 +41,29 @@
         limit #{offset}, #{limit}
     </select>
 
+    <!--根据parent查询商圈-->
+    <select id="queryByParent" resultMap="ItripAreaDicMap">
+        select
+        id, name, areaNo, parent, isActivated, isTradingArea, isHot, level, isChina, pinyin, creationDate, createdBy, modifyDate, modifiedBy
+        from itripdb.itrip_area_dic
+        where isActivated = #{isactivated} and
+        isTradingArea = #{istradingarea} and
+        parent = #{parent}
+    </select>
+
+    <!--根据酒店ID查询商圈-->
+    <select id="queryByHotelId" resultMap="AreaDicMap">
+        select
+        ta.`hotelId`,ad.`id`,ad.`name`
+        from itrip_hotel_trading_area ta inner join itrip_area_dic ad on ta.areaId=ad.id
+        where ta.hotelId=#{hotelId}
+    </select>
+
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="ItripAreaDicMap">
         select
-          id, name, areaNo, parent, isActivated, isTradingArea, isHot, level, isChina, pinyin, creationDate, createdBy, modifyDate, modifiedBy
+        id, name, areaNo, parent, isActivated, isTradingArea, isHot, level, isChina, pinyin, creationDate, createdBy,
+        modifyDate, modifiedBy
         from itripdb.itrip_area_dic
         <where>
             <if test="id != null">

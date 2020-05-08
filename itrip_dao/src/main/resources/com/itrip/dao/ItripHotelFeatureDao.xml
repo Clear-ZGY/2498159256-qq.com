@@ -12,6 +12,13 @@
         <result property="modifiedby" column="modifiedBy" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap type="com.itrip.entity.ItripHotelFeature" id="HotelFeatureMap">
+        <result property="hotelid" column="hotelId" jdbcType="INTEGER"/>
+        <collection property="itripLabelDicList" ofType="com.itrip.entity.ItripLabelDic">
+            <id property="id" column="id"></id>
+        </collection>
+    </resultMap>
+
     <!--查询单个-->
     <select id="queryById" resultMap="ItripHotelFeatureMap">
         select
@@ -28,10 +35,21 @@
         limit #{offset}, #{limit}
     </select>
 
+
+    <!--根据酒店ID查询数据-->
+    <select id="queryByHotelId" resultMap="HotelFeatureMap">
+        select
+         f.hotelId,d.name,d.id,d.description
+        from itrip_hotel_feature f
+        inner join itrip_label_dic d
+        on f.featureId=d.id
+        where f.hotelId=#{hotelId}
+    </select>
+
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="ItripHotelFeatureMap">
         select
-          id, hotelId, featureId, creationDate, createdBy, modifyDate, modifiedBy
+        id, hotelId, featureId, creationDate, createdBy, modifyDate, modifiedBy
         from itripdb.itrip_hotel_feature
         <where>
             <if test="id != null">

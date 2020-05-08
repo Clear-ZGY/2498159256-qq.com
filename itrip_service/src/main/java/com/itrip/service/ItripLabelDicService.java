@@ -1,6 +1,8 @@
 package com.itrip.service;
 
 import com.itrip.entity.ItripLabelDic;
+import com.itrip.vo.ItripLabelDicVO;
+
 import java.util.List;
 
 /**
@@ -27,6 +29,16 @@ public interface ItripLabelDicService {
      * @return 对象列表
      */
     List<ItripLabelDic> queryAllByLimit(int offset, int limit);
+
+    /**
+     * 根据ParentId查询多条数据
+     *
+     * @param parentId 参数
+     * @return 对象列表
+     */
+    List<ItripLabelDicVO> queryByParentId(Long parentId);
+
+
 
     /**
      * 新增数据

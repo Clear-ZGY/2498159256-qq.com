@@ -31,6 +31,21 @@ public class ItripImageServiceImpl implements ItripImageService {
     }
 
     /**
+     * 通过targetId查询数据
+     *
+     * @param targetId 酒店ID
+     * @return 对象列表
+     */
+
+    @Override
+    public List<ItripImage> queryByTargetId(Long targetId) {
+        ItripImage itripImage = new ItripImage();
+        itripImage.setTargetid(targetId);
+        itripImage.setType("0");
+        return this.itripImageDao.queryByTargetId(itripImage);
+    }
+
+    /**
      * 查询多条数据
      *
      * @param offset 查询起始位置

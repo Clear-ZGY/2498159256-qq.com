@@ -43,6 +43,17 @@ public class ItripHotelFeatureServiceImpl implements ItripHotelFeatureService {
     }
 
     /**
+     * 根据酒店ID查询数据
+     *
+     * @param hotelId 酒店ID
+     * @return 对象列表
+     */
+    @Override
+    public ItripHotelFeature queryByHotelId(Long hotelId) {
+        return itripHotelFeatureDao.queryByHotelId(hotelId);
+    }
+
+    /**
      * 新增数据
      *
      * @param itripHotelFeature 实例对象

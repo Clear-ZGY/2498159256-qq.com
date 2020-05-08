@@ -14,6 +14,7 @@
         <module>itrip_service</module>
         <module>itrip_user</module>
         <module>itrip_utils</module>
+        <module>itrip_biz</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->

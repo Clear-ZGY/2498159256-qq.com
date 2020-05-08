@@ -22,6 +22,15 @@
         where id = #{id}
     </select>
 
+    <!--查询单个-->
+    <select id="queryByTargetId" resultMap="ItripImageMap">
+        select
+          id, type, targetId, position, imgUrl, creationDate, createdBy, modifyDate, modifiedBy
+        from itripdb.itrip_image
+        where targetId = #{targetid} and
+        type = #{type}
+    </select>
+
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="ItripImageMap">
         select
@@ -33,7 +42,7 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="ItripImageMap">
         select
-          id, type, targetId, position, imgUrl, creationDate, createdBy, modifyDate, modifiedBy
+        id, type, targetId, position, imgUrl, creationDate, createdBy, modifyDate, modifiedBy
         from itripdb.itrip_image
         <where>
             <if test="id != null">

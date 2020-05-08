@@ -27,7 +27,15 @@ public interface ItripHotelFeatureDao {
      * @param limit 查询条数
      * @return 对象列表
      */
-    List<ItripHotelFeature> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
+    List<ItripHotelFeature> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);/**
+
+     /**
+     * 根据酒店ID查询数据
+     *
+     * @param hotelId 酒店ID
+     * @return 对象列表
+     */
+    ItripHotelFeature queryByHotelId(@Param("hotelId") Long hotelId);
 
 
     /**

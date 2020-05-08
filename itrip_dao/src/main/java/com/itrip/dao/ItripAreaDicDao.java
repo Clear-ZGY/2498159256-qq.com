@@ -1,7 +1,9 @@
 package com.itrip.dao;
 
 import com.itrip.entity.ItripAreaDic;
+import com.itrip.entity.ItripHotelTradingArea;
 import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public interface ItripAreaDicDao {
      * 查询指定行数据
      *
      * @param offset 查询起始位置
-     * @param limit 查询条数
+     * @param limit  查询条数
      * @return 对象列表
      */
     List<ItripAreaDic> queryAllByLimit(@Param("offset") int offset, @Param("limit") int limit);
@@ -37,6 +39,22 @@ public interface ItripAreaDicDao {
      * @return 对象列表
      */
     List<ItripAreaDic> queryAll(ItripAreaDic itripAreaDic);
+
+    /**
+     * 根据parent查询商圈
+     *
+     * @param itripAreaDic 查询对象
+     * @return 对象列表
+     */
+    List<ItripAreaDic> queryByParent(ItripAreaDic itripAreaDic);
+
+    /**
+     * 根据酒店Id查询商圈
+     *
+     * @param hotelId 酒店Id
+     * @return 对象
+     */
+    ItripHotelTradingArea queryByHotelId( @Param("hotelId") Long hotelId);
 
     /**
      * 新增数据

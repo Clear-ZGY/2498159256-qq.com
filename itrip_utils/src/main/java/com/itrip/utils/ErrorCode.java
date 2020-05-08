@@ -32,16 +32,11 @@ public class ErrorCode {
     public final static String SMS_VERIFICATION_CODE_MISMATCH = "30012";//短信验证码不匹配
     public final static String MOBILE_NUMBER_DOES_NOT_EXIST_OR_IS_INVALID = "30013";//手机号码不存在或已失效
     public final static String THE_PHONE_NUMBER_FORMAT_IS_INCORRECT_OR_EMPTY = "30014";//手机号码格式不正确或为空
-    public final static String SMS_VERIFICATION_CODE_SENDING_FAILED="30015";//短信验证码发送失败
-    public final static String SMS_VERIFICATION_FAILED="30018";//短信验证失败
+    public final static String SMS_VERIFICATION_CODE_SENDING_FAILED = "30015";//短信验证码发送失败
+    public final static String SMS_VERIFICATION_FAILED = "30018";//短信验证失败
 
     public final static String THE_EMAIL_ACCOUNT_FORMAT_IS_INCORRECT_OR_EMPTY = "30016";//邮箱账号格式不正确或为空
-    public final static String EMAIL_VERIFICATION_CODE_SENDING_FAILED="30017";//邮箱验证码发送失败
-
-
-
-
-
+    public final static String EMAIL_VERIFICATION_CODE_SENDING_FAILED = "30017";//邮箱验证码发送失败
 
 
     /*认证模块错误码-end*/
@@ -51,4 +46,22 @@ public class ErrorCode {
     public static final String AUTH_REPLACETOKEN_FAILED = "5001";  // 换取AccessToken失败
 
     /*第三方接入错误码-end*/
+
+    /*酒店主业务biz-start*/
+    public static final String PARAMETER_IS_NULL = "10203";//(cityId)参数为空
+    public static final String PARAMETER_IS_NULL_QUERYBUTYPE = "10201 ";//( hotelId)参数为空
+    public static final String SYSTEM_EXCEPTION_GET_FAILED_QUERYBUTYPE = "10202  ";//( hotelId)参数为空
+    public static final String SYSTEM_EXCEPTION_GET_FAILED = "10204 ";//系统异常获取失败
+    public static final String SYSTEM_EXCEPTION_GET_FAILED_QUERYBYPOLICY  = "10209 ";//系统异常获取失败
+    public static final String SYSTEM_EXCEPTION_GET_FAILED_QUERYBYPARENTID = "10205   ";//系统异常获取失败
+    public static final String SYSTEM_EXCEPTION_GET_FAILED_GETHOTELDESC = "10211   ";//系统异常获取失败
+    public static final String SYSTEM_EXCEPTION_GET_FAILED_QUERYHOTELFACILITIES = "10207 ";//系统异常获取失败
+    public static final String FAILED_TO_GET_HOTEL_VIDEO_TEXT_DESCRIPTION = "100214  ";//系统异常获取失败
+    public static final String HOTEL_ID_IS_EMPTY = "100213  ";//酒店ID为空
+    public static final String HOTEL_ID_IS_EMPTY_QUERYHOTELFACILITIES = "10206  ";//酒店ID为空
+    public static final String HOTEL_ID_IS_EMPTY_QUERYBYPOLICY = "10208  ";//酒店ID为空
+    public static final String HOTEL_ID_IS_EMPTY_GETVIDEODESC = "100215   ";//酒店ID为空
+    public static final String HOTEL_ID_IS_EMPTY_GETHOTELDESC = "10210   ";//酒店ID为空
+    public static final String FAILED_TO_GET_TH_HOTEL_PICTURE = "100212   ";//获取酒店图片失败
+    /*酒店主业务biz-end*/
 }

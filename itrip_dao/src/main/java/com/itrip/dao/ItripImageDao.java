@@ -21,6 +21,14 @@ public interface ItripImageDao {
     ItripImage queryById(Long id);
 
     /**
+     * 通过itripImage对象查询数据
+     *
+     * @param itripImage 酒店ID
+     * @return 对象列表
+     */
+    List<ItripImage> queryByTargetId(ItripImage itripImage);
+
+    /**
      * 查询指定行数据
      *
      * @param offset 查询起始位置

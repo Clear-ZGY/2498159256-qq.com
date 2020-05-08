@@ -91,8 +91,4 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <!--支持PUT和DELETE请求结束-->
-
-    <!--配置log4j日志开始-->
-
-    <!--配置log4j日志结束-->
 </web-app>

@@ -1,6 +1,10 @@
 package com.itrip.service;
 
 import com.itrip.entity.ItripHotel;
+import com.itrip.vo.HotelVideoDescVO;
+import com.itrip.vo.ItripSearchDetailsHotelVO;
+import com.itrip.vo.ItripSearchPolicyHotelVO;
+
 import java.util.List;
 
 /**
@@ -29,6 +33,14 @@ public interface ItripHotelService {
     List<ItripHotel> queryAllByLimit(int offset, int limit);
 
     /**
+     * 根据酒店Id查询酒店政策
+     *
+     * @param id 酒店Id
+     * @return 对象列表
+     */
+    List<ItripSearchPolicyHotelVO> queryAllByPolicy(Long id);
+
+    /**
      * 新增数据
      *
      * @param itripHotel 实例对象
@@ -51,5 +63,19 @@ public interface ItripHotelService {
      * @return 是否成功
      */
     boolean deleteById(Long id);
+
+    /**
+     * 根据酒店Id获取酒店名称、周围商圈、特色
+     * @param targetId 酒店Id
+     * @return
+     */
+    HotelVideoDescVO getHotelVideoDesc(Long targetId);
+
+    /**
+     * 根据酒店Id获取酒店特色及介绍
+     * @param targetId 酒店Id
+     * @return
+     */
+    List<ItripSearchDetailsHotelVO> getHotelDesc(Long targetId);
 
 }

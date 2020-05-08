@@ -20,6 +20,14 @@ public interface ItripImageService {
     ItripImage queryById(Long id);
 
     /**
+     * 通过targetId查询数据
+     *
+     * @param targetId 酒店ID
+     * @return 对象列表
+     */
+    List<ItripImage> queryByTargetId(Long targetId);
+
+    /**
      * 查询多条数据
      *
      * @param offset 查询起始位置
